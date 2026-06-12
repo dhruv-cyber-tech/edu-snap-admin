@@ -223,10 +223,26 @@ export const recentUploads = [...resources]
   .sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt))
   .slice(0, 5);
 
+// Breakdown of resources by subject.
+const bySubject = subjects
+  .map((subject) => ({
+    subject,
+    count: resources.filter((r) => r.subject === subject).length,
+  }))
+  .filter((row) => row.count > 0);
+
+// Breakdown of resources by type.
+const byType = RESOURCE_TYPES.map((type) => ({
+  type,
+  count: resources.filter((r) => r.type === type).length,
+})).filter((row) => row.count > 0);
+
 export const dashboardStats = {
   totalResources: 47,
   thisMonthUploads: 8,
   totalSubjects: 7,
+  bySubject,
+  byType,
   // Extra fields consumed by the dashboard UI.
   totalStudents: 312,
   totalDownloads: 1032,
