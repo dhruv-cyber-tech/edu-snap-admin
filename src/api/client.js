@@ -65,14 +65,49 @@ function normalize(url = "") {
   return url.split("?")[0].replace(/\/$/, "");
 }
 
+function parseParams(url = "") {
+  const qs = url.split("?")[1] ?? "";
+  return Object.fromEntries(new URLSearchParams(qs));
+}
+
 let mockResourceStore = [...mockResources];
 let nextId = mockResourceStore.length + 1;
+
+function matchesFilters(r, p) {
+  if (p.standard && r.standard !== p.standard) return false;
+  if (p.subject && r.subject !== p.subject) return false;
+  if (p.chapter && r.chapter !== p.chapter) return false;
+  if (p.type && r.type !== p.type) return false;
+  if (p.search) {
+    const q = p.search.toLowerCase();
+    const hay = `${r.title} ${r.subject} ${r.chapter} ${(r.tags ?? []).join(" ")}`.toLowerCase();
+    if (!hay.includes(q)) return false;
+  }
+  return true;
+}
 
 if (USE_MOCK) {
   client.get = (url) => {
     const path = normalize(url);
     if (path === "/dashboard/stats") return delay(dashboardStats);
-    if (path === "/resources") return delay(mockResourceStore);
+
+    if (path === "/resources") {
+      const p = parseParams(url);
+      const filtered = mockResourceStore.filter((r) => matchesFilters(r, p));
+      const page = Number(p.page ?? 0);
+      const size = Number(p.size ?? 20);
+      const start = page * size;
+      const content = filtered.slice(start, start + size);
+      // Spring-style Page response.
+      return delay({
+        content,
+        totalElements: filtered.length,
+        totalPages: Math.max(1, Math.ceil(filtered.length / size)),
+        number: page,
+        size,
+      });
+    }
+
     return delay(null);
   };
 
@@ -92,8 +127,9 @@ if (USE_MOCK) {
         title: get("title") ?? "Untitled",
         subject: get("subject") ?? "",
         description: get("description") ?? "",
-        type: "Notes",
-        standard: "Class 10",
+        chapter: get("chapter") ?? "",
+        type: get("type") ?? "Notes",
+        standard: get("standard") ?? "Class 10",
         tags: ["practice"],
         downloads: 0,
         url: "#",
@@ -105,6 +141,31 @@ if (USE_MOCK) {
 
     return delay(null);
   };
+
+  client.put = (url, body) => {
+    const path = normalize(url);
+    const match = path.match(/^\/resources\/(\d+)$/);
+    if (match) {
+      const id = Number(match[1]);
+      mockResourceStore = mockResourceStore.map((r) =>
+        r.id === id ? { ...r, ...body } : r,
+      );
+      return delay(mockResourceStore.find((r) => r.id === id));
+    }
+    return delay(null);
+  };
+
+  client.delete = (url) => {
+    const path = normalize(url);
+    const match = path.match(/^\/resources\/(\d+)$/);
+    if (match) {
+      const id = Number(match[1]);
+      mockResourceStore = mockResourceStore.filter((r) => r.id !== id);
+      return delay({ success: true });
+    }
+    return delay(null);
+  };
 }
 
 export default client;
+
