@@ -275,3 +275,45 @@ export const mockUser = {
 };
 
 export { RESOURCE_TYPES };
+
+// ---------------------------------------------------------------------------
+// Structured entities (with ids) for Standards / Subjects / Chapters
+// These power the Settings management screens and the Upload cascading dropdowns.
+// ---------------------------------------------------------------------------
+
+export const mockStandards = standards.map((name, i) => ({
+  id: i + 1,
+  name,
+  sortOrder: i + 1,
+}));
+
+const SUBJECTS_FOR = (standardName) =>
+  standardName === "Class 11" || standardName === "Class 12"
+    ? ["Maths", "Physics", "Chemistry", "Biology", "English"]
+    : ["Maths", "Science", "English", "Social Science"];
+
+let _subjectId = 0;
+export const mockSubjects = [];
+mockStandards.forEach((std) => {
+  SUBJECTS_FOR(std.name).forEach((name) => {
+    mockSubjects.push({ id: ++_subjectId, name, standardId: std.id });
+  });
+});
+
+let _chapterId = 0;
+export const mockChapters = [];
+mockSubjects.forEach((subj) => {
+  const list = chapters[subj.name] || [
+    "Introduction",
+    "Core Concepts",
+    "Advanced Topics",
+  ];
+  list.forEach((name, i) => {
+    mockChapters.push({
+      id: ++_chapterId,
+      number: i + 1,
+      name,
+      subjectId: subj.id,
+    });
+  });
+});
