@@ -133,10 +133,38 @@ if (USE_MOCK) {
       });
     }
 
-    return delay(null);
-  };
+    if (path === "/standards") {
+      const sorted = [...standardStore].sort(
+        (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0),
+      );
+      return delay(sorted.map(withSubjectCount));
+    }
 
-  client.post = (url, body) => {
+    if (path === "/tags") {
+      return delay([...mockTags]);
+    }
+
+    let m = path.match(/^\/standards\/(\d+)\/subjects$/);
+    if (m) {
+      const sid = Number(m[1]);
+      return delay(
+        subjectStore
+          .filter((s) => s.standardId === sid)
+          .map(withChapterCount),
+      );
+    }
+
+    m = path.match(/^\/subjects\/(\d+)\/chapters$/);
+    if (m) {
+      const sid = Number(m[1]);
+      return delay(
+        chapterStore
+          .filter((c) => c.subjectId === sid)
+          .sort((a, b) => a.number - b.number),
+      );
+    }
+
+    return delay(null);
     const path = normalize(url);
 
     if (path === "/auth/login") {
