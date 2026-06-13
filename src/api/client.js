@@ -178,6 +178,19 @@ if (USE_MOCK) {
       // body is a FormData instance from the Upload form.
       const get = (k) =>
         body && typeof body.get === "function" ? body.get(k) : body?.[k];
+      let tagList = ["practice"];
+      const rawTags = get("tags");
+      if (rawTags) {
+        try {
+          const parsed = JSON.parse(rawTags);
+          if (Array.isArray(parsed)) tagList = parsed;
+        } catch {
+          tagList = String(rawTags)
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean);
+        }
+      }
       const created = {
         id: nextId++,
         title: get("title") ?? "Untitled",
@@ -186,12 +199,43 @@ if (USE_MOCK) {
         chapter: get("chapter") ?? "",
         type: get("type") ?? "Notes",
         standard: get("standard") ?? "Class 10",
-        tags: ["practice"],
+        tags: tagList,
         downloads: 0,
         url: "#",
         uploadedAt: new Date().toISOString(),
       };
       mockResourceStore = [created, ...mockResourceStore];
+      return delay(created);
+    }
+
+    if (path === "/standards") {
+      const created = {
+        id: nextStandardId++,
+        name: body?.name ?? "Untitled",
+        sortOrder: Number(body?.sortOrder ?? standardStore.length + 1),
+      };
+      standardStore = [...standardStore, created];
+      return delay(withSubjectCount(created));
+    }
+
+    if (path === "/subjects") {
+      const created = {
+        id: nextSubjectId++,
+        name: body?.name ?? "Untitled",
+        standardId: Number(body?.standardId),
+      };
+      subjectStore = [...subjectStore, created];
+      return delay(withChapterCount(created));
+    }
+
+    if (path === "/chapters") {
+      const created = {
+        id: nextChapterId++,
+        number: Number(body?.number ?? 1),
+        name: body?.name ?? "Untitled",
+        subjectId: Number(body?.subjectId),
+      };
+      chapterStore = [...chapterStore, created];
       return delay(created);
     }
 
