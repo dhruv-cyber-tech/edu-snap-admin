@@ -143,7 +143,7 @@ function StandardsTab() {
 
   if (isLoading) return <ListSkeleton />;
   if (isError)
-    return <ErrorState message="Failed to load standards" onRetry={refetch} />;
+    return <ErrorState label="Failed to load standards" onRetry={refetch} />;
 
   return (
     <>
@@ -324,7 +324,7 @@ function SubjectsTab() {
       ) : subjectsQuery.isLoading ? (
         <ListSkeleton />
       ) : subjectsQuery.isError ? (
-        <ErrorState message="Failed to load subjects" onRetry={subjectsQuery.refetch} />
+        <ErrorState label="Failed to load subjects" onRetry={subjectsQuery.refetch} />
       ) : (
         <div className="space-y-3">
           {(subjectsQuery.data ?? []).length === 0 && (
@@ -544,7 +544,7 @@ function ChaptersTab() {
       ) : chaptersQuery.isLoading ? (
         <ListSkeleton />
       ) : chaptersQuery.isError ? (
-        <ErrorState message="Failed to load chapters" onRetry={chaptersQuery.refetch} />
+        <ErrorState label="Failed to load chapters" onRetry={chaptersQuery.refetch} />
       ) : (
         <div className="space-y-3">
           {(chaptersQuery.data ?? []).length === 0 && (
