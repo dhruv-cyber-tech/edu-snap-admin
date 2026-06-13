@@ -257,12 +257,42 @@ if (USE_MOCK) {
 
   client.delete = (url) => {
     const path = normalize(url);
-    const match = path.match(/^\/resources\/(\d+)$/);
+    let match = path.match(/^\/resources\/(\d+)$/);
     if (match) {
       const id = Number(match[1]);
       mockResourceStore = mockResourceStore.filter((r) => r.id !== id);
       return delay({ success: true });
     }
+
+    match = path.match(/^\/standards\/(\d+)$/);
+    if (match) {
+      const id = Number(match[1]);
+      const subjectIds = subjectStore
+        .filter((s) => s.standardId === id)
+        .map((s) => s.id);
+      standardStore = standardStore.filter((s) => s.id !== id);
+      subjectStore = subjectStore.filter((s) => s.standardId !== id);
+      chapterStore = chapterStore.filter(
+        (c) => !subjectIds.includes(c.subjectId),
+      );
+      return delay({ success: true });
+    }
+
+    match = path.match(/^\/subjects\/(\d+)$/);
+    if (match) {
+      const id = Number(match[1]);
+      subjectStore = subjectStore.filter((s) => s.id !== id);
+      chapterStore = chapterStore.filter((c) => c.subjectId !== id);
+      return delay({ success: true });
+    }
+
+    match = path.match(/^\/chapters\/(\d+)$/);
+    if (match) {
+      const id = Number(match[1]);
+      chapterStore = chapterStore.filter((c) => c.id !== id);
+      return delay({ success: true });
+    }
+
     return delay(null);
   };
 }
