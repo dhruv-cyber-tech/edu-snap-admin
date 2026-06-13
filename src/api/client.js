@@ -165,6 +165,9 @@ if (USE_MOCK) {
     }
 
     return delay(null);
+  };
+
+  client.post = (url, body) => {
     const path = normalize(url);
 
     if (path === "/auth/login") {
