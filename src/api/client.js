@@ -77,6 +77,27 @@ function parseParams(url = "") {
 let mockResourceStore = [...mockResources];
 let nextId = mockResourceStore.length + 1;
 
+// Entity stores for Standards / Subjects / Chapters management.
+let standardStore = mockStandards.map((s) => ({ ...s }));
+let subjectStore = mockSubjects.map((s) => ({ ...s }));
+let chapterStore = mockChapters.map((c) => ({ ...c }));
+let nextStandardId = standardStore.length + 1;
+let nextSubjectId = subjectStore.length + 1;
+let nextChapterId = chapterStore.length + 1;
+
+function withSubjectCount(std) {
+  return {
+    ...std,
+    subjectCount: subjectStore.filter((s) => s.standardId === std.id).length,
+  };
+}
+function withChapterCount(subj) {
+  return {
+    ...subj,
+    chapterCount: chapterStore.filter((c) => c.subjectId === subj.id).length,
+  };
+}
+
 function matchesFilters(r, p) {
   if (p.standard && r.standard !== p.standard) return false;
   if (p.subject && r.subject !== p.subject) return false;
