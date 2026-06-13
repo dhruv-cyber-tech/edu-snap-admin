@@ -3,6 +3,10 @@ import {
   dashboardStats,
   resources as mockResources,
   mockUser,
+  tags as mockTags,
+  mockStandards,
+  mockSubjects,
+  mockChapters,
 } from "./mockData";
 
 // Flip this to false when you are ready to connect the real Spring Boot API.
