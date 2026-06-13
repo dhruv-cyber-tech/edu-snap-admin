@@ -3,6 +3,10 @@ import {
   dashboardStats,
   resources as mockResources,
   mockUser,
+  tags as mockTags,
+  mockStandards,
+  mockSubjects,
+  mockChapters,
 } from "./mockData";
 
 // Flip this to false when you are ready to connect the real Spring Boot API.
@@ -73,6 +77,27 @@ function parseParams(url = "") {
 let mockResourceStore = [...mockResources];
 let nextId = mockResourceStore.length + 1;
 
+// Entity stores for Standards / Subjects / Chapters management.
+let standardStore = mockStandards.map((s) => ({ ...s }));
+let subjectStore = mockSubjects.map((s) => ({ ...s }));
+let chapterStore = mockChapters.map((c) => ({ ...c }));
+let nextStandardId = standardStore.length + 1;
+let nextSubjectId = subjectStore.length + 1;
+let nextChapterId = chapterStore.length + 1;
+
+function withSubjectCount(std) {
+  return {
+    ...std,
+    subjectCount: subjectStore.filter((s) => s.standardId === std.id).length,
+  };
+}
+function withChapterCount(subj) {
+  return {
+    ...subj,
+    chapterCount: chapterStore.filter((c) => c.subjectId === subj.id).length,
+  };
+}
+
 function matchesFilters(r, p) {
   if (p.standard && r.standard !== p.standard) return false;
   if (p.subject && r.subject !== p.subject) return false;
@@ -108,6 +133,37 @@ if (USE_MOCK) {
       });
     }
 
+    if (path === "/standards") {
+      const sorted = [...standardStore].sort(
+        (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0),
+      );
+      return delay(sorted.map(withSubjectCount));
+    }
+
+    if (path === "/tags") {
+      return delay([...mockTags]);
+    }
+
+    let m = path.match(/^\/standards\/(\d+)\/subjects$/);
+    if (m) {
+      const sid = Number(m[1]);
+      return delay(
+        subjectStore
+          .filter((s) => s.standardId === sid)
+          .map(withChapterCount),
+      );
+    }
+
+    m = path.match(/^\/subjects\/(\d+)\/chapters$/);
+    if (m) {
+      const sid = Number(m[1]);
+      return delay(
+        chapterStore
+          .filter((c) => c.subjectId === sid)
+          .sort((a, b) => a.number - b.number),
+      );
+    }
+
     return delay(null);
   };
 
@@ -122,6 +178,19 @@ if (USE_MOCK) {
       // body is a FormData instance from the Upload form.
       const get = (k) =>
         body && typeof body.get === "function" ? body.get(k) : body?.[k];
+      let tagList = ["practice"];
+      const rawTags = get("tags");
+      if (rawTags) {
+        try {
+          const parsed = JSON.parse(rawTags);
+          if (Array.isArray(parsed)) tagList = parsed;
+        } catch {
+          tagList = String(rawTags)
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean);
+        }
+      }
       const created = {
         id: nextId++,
         title: get("title") ?? "Untitled",
@@ -130,12 +199,43 @@ if (USE_MOCK) {
         chapter: get("chapter") ?? "",
         type: get("type") ?? "Notes",
         standard: get("standard") ?? "Class 10",
-        tags: ["practice"],
+        tags: tagList,
         downloads: 0,
         url: "#",
         uploadedAt: new Date().toISOString(),
       };
       mockResourceStore = [created, ...mockResourceStore];
+      return delay(created);
+    }
+
+    if (path === "/standards") {
+      const created = {
+        id: nextStandardId++,
+        name: body?.name ?? "Untitled",
+        sortOrder: Number(body?.sortOrder ?? standardStore.length + 1),
+      };
+      standardStore = [...standardStore, created];
+      return delay(withSubjectCount(created));
+    }
+
+    if (path === "/subjects") {
+      const created = {
+        id: nextSubjectId++,
+        name: body?.name ?? "Untitled",
+        standardId: Number(body?.standardId),
+      };
+      subjectStore = [...subjectStore, created];
+      return delay(withChapterCount(created));
+    }
+
+    if (path === "/chapters") {
+      const created = {
+        id: nextChapterId++,
+        number: Number(body?.number ?? 1),
+        name: body?.name ?? "Untitled",
+        subjectId: Number(body?.subjectId),
+      };
+      chapterStore = [...chapterStore, created];
       return delay(created);
     }
 
@@ -157,12 +257,42 @@ if (USE_MOCK) {
 
   client.delete = (url) => {
     const path = normalize(url);
-    const match = path.match(/^\/resources\/(\d+)$/);
+    let match = path.match(/^\/resources\/(\d+)$/);
     if (match) {
       const id = Number(match[1]);
       mockResourceStore = mockResourceStore.filter((r) => r.id !== id);
       return delay({ success: true });
     }
+
+    match = path.match(/^\/standards\/(\d+)$/);
+    if (match) {
+      const id = Number(match[1]);
+      const subjectIds = subjectStore
+        .filter((s) => s.standardId === id)
+        .map((s) => s.id);
+      standardStore = standardStore.filter((s) => s.id !== id);
+      subjectStore = subjectStore.filter((s) => s.standardId !== id);
+      chapterStore = chapterStore.filter(
+        (c) => !subjectIds.includes(c.subjectId),
+      );
+      return delay({ success: true });
+    }
+
+    match = path.match(/^\/subjects\/(\d+)$/);
+    if (match) {
+      const id = Number(match[1]);
+      subjectStore = subjectStore.filter((s) => s.id !== id);
+      chapterStore = chapterStore.filter((c) => c.subjectId !== id);
+      return delay({ success: true });
+    }
+
+    match = path.match(/^\/chapters\/(\d+)$/);
+    if (match) {
+      const id = Number(match[1]);
+      chapterStore = chapterStore.filter((c) => c.id !== id);
+      return delay({ success: true });
+    }
+
     return delay(null);
   };
 }
