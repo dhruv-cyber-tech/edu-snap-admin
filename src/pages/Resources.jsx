@@ -428,6 +428,56 @@ export default function Resources() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Mobile floating search */}
+      <div className="md:hidden">
+        {mobileSearchOpen ? (
+          <div className="fixed inset-x-3 bottom-24 z-40 flex items-center gap-2 rounded-2xl border border-border bg-card p-2 shadow-xl animate-scale-in">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+              <Input
+                autoFocus
+                value={filters.search}
+                onChange={(e) => setFilter("search", e.target.value)}
+                placeholder="Search resources…"
+                className="h-11 pl-9 text-base"
+                aria-label="Search resources"
+              />
+            </div>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-11 w-11 shrink-0"
+              aria-label="Close search"
+              onClick={() => setMobileSearchOpen(false)}
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
+        ) : (
+          <Button
+            size="icon"
+            className="fixed bottom-24 right-4 z-40 h-14 w-14 rounded-full shadow-xl animate-fade-in"
+            aria-label="Search resources"
+            onClick={() => setMobileSearchOpen(true)}
+          >
+            <Search className="h-6 w-6" />
+          </Button>
+        )}
+      </div>
+
+      {/* Back to top */}
+      {showBackToTop && (
+        <Button
+          size="icon"
+          variant="secondary"
+          className="fixed bottom-44 right-4 z-40 h-12 w-12 rounded-full border border-border shadow-lg animate-fade-in md:bottom-6"
+          aria-label="Back to top"
+          onClick={scrollToTop}
+        >
+          <ArrowUp className="h-5 w-5" />
+        </Button>
+      )}
     </div>
   );
 }
