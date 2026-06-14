@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 export default function ComingSoon({ title, description, icon: Icon, message, features = [] }) {
   return (
     <div className="animate-fade-in">
-      <PageHeader title={title} description={description} icon={icon} />
+      <PageHeader title={title} description={description} icon={Icon} />
 
       <Card className="overflow-hidden">
         <CardContent className="flex flex-col items-center px-5 py-12 text-center sm:py-16">
