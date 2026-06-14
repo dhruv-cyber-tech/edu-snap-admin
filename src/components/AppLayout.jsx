@@ -190,13 +190,14 @@ function MobileHeader() {
 
 export default function AppLayout() {
   const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
   return (
     <div className="flex min-h-screen w-full bg-background">
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} />
       <div className="flex-1 flex flex-col min-w-0">
         <MobileHeader />
         <main className="flex-1 px-4 py-5 sm:px-6 lg:px-8 pb-24 md:pb-8">
-          <div className="mx-auto w-full max-w-5xl">
+          <div key={location.pathname} className="mx-auto w-full max-w-5xl animate-fade-in">
             <Outlet />
           </div>
         </main>
