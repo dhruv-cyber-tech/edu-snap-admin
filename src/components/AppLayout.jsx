@@ -131,13 +131,27 @@ function BottomNav() {
             to={to}
             className={({ isActive }) =>
               cn(
-                "flex flex-col items-center justify-center gap-1 py-2 text-xs font-medium touch-target",
+                "relative flex flex-col items-center justify-center gap-1 py-2 text-xs font-medium touch-target transition-colors",
                 isActive ? "text-primary" : "text-muted-foreground",
               )
             }
           >
-            <Icon className="h-6 w-6" />
-            <span>{label}</span>
+            {({ isActive }) => (
+              <>
+                {isActive && (
+                  <span className="absolute top-0 h-1 w-8 rounded-full bg-primary" aria-hidden="true" />
+                )}
+                <span
+                  className={cn(
+                    "grid place-items-center rounded-xl px-3 py-1 transition-colors",
+                    isActive && "bg-primary/10",
+                  )}
+                >
+                  <Icon className="h-6 w-6" aria-hidden="true" />
+                </span>
+                <span>{label}</span>
+              </>
+            )}
           </NavLink>
         ))}
       </div>
