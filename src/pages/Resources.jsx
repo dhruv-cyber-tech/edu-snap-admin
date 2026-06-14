@@ -178,13 +178,14 @@ export default function Resources() {
       {/* Filter bar */}
       <Card className="mb-4">
         <CardContent className="space-y-3 p-4">
-          <div className="relative">
+          <div className="relative hidden md:block">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={filters.search}
               onChange={(e) => setFilter("search", e.target.value)}
               placeholder="Search resources…"
               className="h-11 pl-9 text-base"
+              aria-label="Search resources"
             />
           </div>
 
