@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   FolderOpen,
@@ -9,6 +9,7 @@ import {
   Trash2,
   Loader2,
   X,
+  ArrowUp,
 } from "lucide-react";
 import client from "@/api/client";
 import { standards, subjects, chapters, RESOURCE_TYPES } from "@/api/mockData";
@@ -105,6 +106,17 @@ export default function Resources() {
 
   const [editing, setEditing] = useState(null);
   const [deleting, setDeleting] = useState(null);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setShowBackToTop(window.scrollY > 400);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   const queryString = buildQuery(filters);
 
@@ -166,13 +178,14 @@ export default function Resources() {
       {/* Filter bar */}
       <Card className="mb-4">
         <CardContent className="space-y-3 p-4">
-          <div className="relative">
+          <div className="relative hidden md:block">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={filters.search}
               onChange={(e) => setFilter("search", e.target.value)}
               placeholder="Search resources…"
               className="h-11 pl-9 text-base"
+              aria-label="Search resources"
             />
           </div>
 
@@ -415,6 +428,56 @@ export default function Resources() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Mobile floating search */}
+      <div className="md:hidden">
+        {mobileSearchOpen ? (
+          <div className="fixed inset-x-3 bottom-24 z-40 flex items-center gap-2 rounded-2xl border border-border bg-card p-2 shadow-xl animate-scale-in">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+              <Input
+                autoFocus
+                value={filters.search}
+                onChange={(e) => setFilter("search", e.target.value)}
+                placeholder="Search resources…"
+                className="h-11 pl-9 text-base"
+                aria-label="Search resources"
+              />
+            </div>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-11 w-11 shrink-0"
+              aria-label="Close search"
+              onClick={() => setMobileSearchOpen(false)}
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
+        ) : (
+          <Button
+            size="icon"
+            className="fixed bottom-24 right-4 z-40 h-14 w-14 rounded-full shadow-xl animate-fade-in"
+            aria-label="Search resources"
+            onClick={() => setMobileSearchOpen(true)}
+          >
+            <Search className="h-6 w-6" />
+          </Button>
+        )}
+      </div>
+
+      {/* Back to top */}
+      {showBackToTop && (
+        <Button
+          size="icon"
+          variant="secondary"
+          className="fixed bottom-44 right-4 z-40 h-12 w-12 rounded-full border border-border shadow-lg animate-fade-in md:bottom-6"
+          aria-label="Back to top"
+          onClick={scrollToTop}
+        >
+          <ArrowUp className="h-5 w-5" />
+        </Button>
+      )}
     </div>
   );
 }

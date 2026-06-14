@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Users, Wallet, CalendarCheck, ClipboardList } from "lucide-react";
 
 import { Toaster } from "@/components/ui/sonner";
+import OfflineBanner from "@/components/OfflineBanner";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import AppLayout from "@/components/AppLayout";
 import Login from "@/pages/Login";
@@ -22,6 +23,7 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Toaster position="top-center" richColors />
+      <OfflineBanner />
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -44,6 +46,13 @@ export default function App() {
                   title="Students"
                   description="Student portal"
                   icon={Users}
+                  message="Student portal coming soon"
+                  features={[
+                    "Student profiles",
+                    "Login access",
+                    "Assignment submissions",
+                    "Progress tracking",
+                  ]}
                 />
               }
             />
@@ -54,6 +63,13 @@ export default function App() {
                   title="Fees"
                   description="Fee management"
                   icon={Wallet}
+                  message="Fee management coming soon"
+                  features={[
+                    "Fee records",
+                    "Payment tracking",
+                    "Due date reminders",
+                    "Payment history",
+                  ]}
                 />
               }
             />
@@ -64,6 +80,12 @@ export default function App() {
                   title="Attendance"
                   description="Attendance tracking"
                   icon={CalendarCheck}
+                  message="Attendance tracking coming soon"
+                  features={[
+                    "Daily attendance marking",
+                    "Attendance reports",
+                    "Student-wise summary",
+                  ]}
                 />
               }
             />
@@ -74,6 +96,13 @@ export default function App() {
                   title="Scores"
                   description="Test score tracking"
                   icon={ClipboardList}
+                  message="Test scores coming soon"
+                  features={[
+                    "Test score entry",
+                    "Subject-wise performance",
+                    "Progress charts",
+                    "Parent reports",
+                  ]}
                 />
               }
             />

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink, useNavigate, Outlet } from "react-router-dom";
+import { NavLink, useNavigate, useLocation, Outlet } from "react-router-dom";
 import { GraduationCap, LogOut, Lock, Menu, ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -131,13 +131,27 @@ function BottomNav() {
             to={to}
             className={({ isActive }) =>
               cn(
-                "flex flex-col items-center justify-center gap-1 py-2 text-xs font-medium touch-target",
+                "relative flex flex-col items-center justify-center gap-1 py-2 text-xs font-medium touch-target transition-colors",
                 isActive ? "text-primary" : "text-muted-foreground",
               )
             }
           >
-            <Icon className="h-6 w-6" />
-            <span>{label}</span>
+            {({ isActive }) => (
+              <>
+                {isActive && (
+                  <span className="absolute top-0 h-1 w-8 rounded-full bg-primary" aria-hidden="true" />
+                )}
+                <span
+                  className={cn(
+                    "grid place-items-center rounded-xl px-3 py-1 transition-colors",
+                    isActive && "bg-primary/10",
+                  )}
+                >
+                  <Icon className="h-6 w-6" aria-hidden="true" />
+                </span>
+                <span>{label}</span>
+              </>
+            )}
           </NavLink>
         ))}
       </div>
@@ -176,13 +190,14 @@ function MobileHeader() {
 
 export default function AppLayout() {
   const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
   return (
     <div className="flex min-h-screen w-full bg-background">
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} />
       <div className="flex-1 flex flex-col min-w-0">
         <MobileHeader />
         <main className="flex-1 px-4 py-5 sm:px-6 lg:px-8 pb-24 md:pb-8">
-          <div className="mx-auto w-full max-w-5xl">
+          <div key={location.pathname} className="mx-auto w-full max-w-5xl animate-fade-in">
             <Outlet />
           </div>
         </main>
