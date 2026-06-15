@@ -291,97 +291,171 @@ export default function Resources() {
       )}
 
       {data && resources.length > 0 && (
-        <Card>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Title</TableHead>
-                    <TableHead>Class</TableHead>
-                    <TableHead>Subject</TableHead>
-                    <TableHead>Chapter</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Tags</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {resources.map((r) => (
-                    <TableRow key={r.id}>
-                      <TableCell className="font-medium">{r.title}</TableCell>
-                      <TableCell className="whitespace-nowrap">{r.standard}</TableCell>
-                      <TableCell>{r.subject}</TableCell>
-                      <TableCell className="max-w-[180px] truncate">{r.chapter}</TableCell>
-                      <TableCell>
-                        <Badge
-                          variant="outline"
-                          className={TYPE_BADGE[r.type] ?? ""}
-                        >
-                          {r.type}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-wrap gap-1">
-                          {(r.tags ?? []).map((t) => (
-                            <Badge key={t} variant="secondary" className="text-xs">
-                              {t}
+        <>
+          {/* Desktop table */}
+          <div className="hidden md:block">
+            <Card>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Title</TableHead>
+                        <TableHead>Class</TableHead>
+                        <TableHead>Subject</TableHead>
+                        <TableHead>Chapter</TableHead>
+                        <TableHead>Type</TableHead>
+                        <TableHead>Tags</TableHead>
+                        <TableHead>Date</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {resources.map((r) => (
+                        <TableRow key={r.id}>
+                          <TableCell className="font-medium">{r.title}</TableCell>
+                          <TableCell className="whitespace-nowrap">{r.standard}</TableCell>
+                          <TableCell>{r.subject}</TableCell>
+                          <TableCell className="max-w-[180px] truncate">{r.chapter}</TableCell>
+                          <TableCell>
+                            <Badge
+                              variant="outline"
+                              className={TYPE_BADGE[r.type] ?? ""}
+                            >
+                              {r.type}
                             </Badge>
-                          ))}
-                        </div>
-                      </TableCell>
-                      <TableCell className="whitespace-nowrap text-muted-foreground">
-                        {formatDate(r.uploadedAt)}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex justify-end gap-1">
-                          <Button
-                            asChild
-                            variant="ghost"
-                            size="icon"
-                            title="View"
-                          >
-                            <a href={r.url || "#"} target="_blank" rel="noreferrer">
-                              <Eye className="h-4 w-4" />
-                            </a>
-                          </Button>
-                          <Button
-                            asChild
-                            variant="ghost"
-                            size="icon"
-                            title="Download"
-                          >
-                            <a href={r.url || "#"} download>
-                              <Download className="h-4 w-4" />
-                            </a>
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            title="Edit"
-                            onClick={() => setEditing(r)}
-                          >
-                            <Pencil className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            title="Delete"
-                            className="text-destructive"
-                            onClick={() => setDeleting(r)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-wrap gap-1">
+                              {(r.tags ?? []).map((t) => (
+                                <Badge key={t} variant="secondary" className="text-xs">
+                                  {t}
+                                </Badge>
+                              ))}
+                            </div>
+                          </TableCell>
+                          <TableCell className="whitespace-nowrap text-muted-foreground">
+                            {formatDate(r.uploadedAt)}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex justify-end gap-1">
+                              <Button
+                                asChild
+                                variant="ghost"
+                                size="icon"
+                                title="View"
+                              >
+                                <a href={r.url || "#"} target="_blank" rel="noreferrer">
+                                  <Eye className="h-4 w-4" />
+                                </a>
+                              </Button>
+                              <Button
+                                asChild
+                                variant="ghost"
+                                size="icon"
+                                title="Download"
+                              >
+                                <a href={r.url || "#"} download>
+                                  <Download className="h-4 w-4" />
+                                </a>
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                title="Edit"
+                                onClick={() => setEditing(r)}
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                title="Delete"
+                                className="text-destructive"
+                                onClick={() => setDeleting(r)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Mobile cards */}
+          <div className="space-y-3 md:hidden">
+            {resources.map((r) => (
+              <Card key={r.id} className="overflow-hidden animate-fade-in">
+                <CardContent className="p-4 space-y-3">
+                  <h3 className="font-semibold text-base leading-tight">{r.title}</h3>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge variant="outline" className="text-xs">
+                      {r.subject}
+                    </Badge>
+                    <Badge variant="secondary" className="text-xs">
+                      {r.standard}
+                    </Badge>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge
+                      variant="outline"
+                      className={TYPE_BADGE[r.type] ?? ""}
+                    >
+                      {r.type}
+                    </Badge>
+                    <span className="text-sm text-muted-foreground truncate">
+                      {r.chapter}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-end gap-1 pt-2 border-t border-border">
+                    <Button
+                      asChild
+                      variant="ghost"
+                      size="icon"
+                      className="h-10 w-10"
+                      title="View"
+                      aria-label="View resource"
+                    >
+                      <a href={r.url || "#"} target="_blank" rel="noreferrer">
+                        <Eye className="h-4 w-4" />
+                      </a>
+                    </Button>
+                    <Button
+                      asChild
+                      variant="ghost"
+                      size="icon"
+                      className="h-10 w-10"
+                      title="Download"
+                      aria-label="Download resource"
+                    >
+                      <a href={r.url || "#"} download>
+                        <Download className="h-4 w-4" />
+                      </a>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-10 w-10 text-destructive"
+                      title="Delete"
+                      aria-label="Delete resource"
+                      onClick={() => setDeleting(r)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </>
       )}
 
       {/* Edit metadata modal */}
