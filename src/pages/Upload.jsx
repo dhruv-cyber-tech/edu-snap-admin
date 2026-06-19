@@ -323,10 +323,21 @@ export default function Upload() {
                   />
                 </SelectTrigger>
                 <SelectContent>
-                  {(standardsQuery.data ?? []).map((s) => (
-                    <SelectItem key={s.id} value={String(s.id)}>
-                      {s.name}
-                    </SelectItem>
+                  {Object.entries(
+                    (standardsQuery.data ?? []).reduce((acc, s) => {
+                      const key = s.group ?? "Other";
+                      (acc[key] = acc[key] ?? []).push(s);
+                      return acc;
+                    }, {}),
+                  ).map(([group, items]) => (
+                    <SelectGroup key={group}>
+                      <SelectLabel>{group}</SelectLabel>
+                      {items.map((s) => (
+                        <SelectItem key={s.id} value={String(s.id)}>
+                          {s.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
                   ))}
                 </SelectContent>
               </Select>
