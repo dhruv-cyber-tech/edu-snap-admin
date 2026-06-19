@@ -201,10 +201,15 @@ export default function Resources() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={ALL}>All Classes</SelectItem>
-                {standards.map((s) => (
-                  <SelectItem key={s} value={s}>
-                    {s}
-                  </SelectItem>
+                {standardGroups.map((g) => (
+                  <SelectGroup key={g.group}>
+                    <SelectLabel>{g.group}</SelectLabel>
+                    {g.standards.map((s) => (
+                      <SelectItem key={s} value={s}>
+                        {s}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
                 ))}
               </SelectContent>
             </Select>
