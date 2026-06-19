@@ -194,7 +194,7 @@ function StandardsTab() {
                 <Input
                   id="std-name"
                   className="h-12 text-base"
-                  placeholder="e.g. Class 10"
+                  placeholder="e.g. CBSE Std 6"
                   {...register("name", { required: "Name is required" })}
                 />
                 {errors.name && (
