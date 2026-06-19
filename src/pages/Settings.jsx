@@ -616,7 +616,7 @@ function ChaptersTab() {
                 <Input
                   id="chap-name"
                   className="h-12 text-base"
-                  placeholder="e.g. Real Numbers"
+                  placeholder="e.g. Grammar Basics"
                   {...register("name", { required: "Name is required" })}
                 />
                 {errors.name && (
