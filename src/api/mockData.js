@@ -1,22 +1,38 @@
 // Realistic sample data for an Indian tuition center (EduVault).
 // Used when USE_MOCK is true in src/api/client.js.
 
-export const standards = [
-  "Class 8",
-  "Class 9",
-  "Class 10",
-  "Class 11",
-  "Class 12",
+// ---------------------------------------------------------------------------
+// Standards / Classes — grouped by board & medium.
+// ---------------------------------------------------------------------------
+
+const STD_NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8];
+
+const STANDARD_GROUP_DEFS = [
+  { group: "GSEB Gujarati Medium", prefix: "GSEB Gujarati Std" },
+  { group: "GSEB English Medium", prefix: "GSEB English Std" },
+  { group: "CBSE", prefix: "CBSE Std" },
 ];
 
+// Grouped structure for dropdowns with non-selectable group headers.
+export const standardGroups = STANDARD_GROUP_DEFS.map(({ group, prefix }) => ({
+  group,
+  standards: STD_NUMBERS.map((n) => `${prefix} ${n}`),
+}));
+
+// Flat list of every standard name (used for filtering / search).
+export const standards = standardGroups.flatMap((g) => g.standards);
+
 export const subjects = [
-  "Maths",
-  "Science",
+  "Gujarati",
+  "Hindi",
   "English",
+  "Maths",
+  "Paryavaran",
+  "Vigyan",
+  "Samajik Vigyan",
+  "EVS",
+  "Science",
   "Social Science",
-  "Physics",
-  "Chemistry",
-  "Biology",
 ];
 
 export const tags = [
@@ -30,191 +46,165 @@ export const tags = [
 
 // At least 3 chapters per subject.
 export const chapters = {
-  Maths: [
-    "Real Numbers",
-    "Polynomials",
-    "Quadratic Equations",
-    "Trigonometry",
-  ],
-  Science: [
-    "Light — Reflection & Refraction",
-    "Life Processes",
-    "Electricity",
-  ],
-  English: [
-    "Grammar Essentials",
-    "Comprehension Practice",
-    "Letter & Essay Writing",
-  ],
-  "Social Science": [
-    "The French Revolution",
-    "Resources & Development",
-    "Democracy & Diversity",
-  ],
-  Physics: [
-    "Laws of Motion",
-    "Work, Energy & Power",
-    "Electrostatics",
-  ],
-  Chemistry: [
-    "Chemical Bonding",
-    "Acids, Bases & Salts",
-    "Carbon and its Compounds",
-  ],
-  Biology: [
-    "Cell — Structure & Function",
-    "Human Physiology",
-    "Genetics & Evolution",
-  ],
+  Gujarati: ["Grammar Basics", "Stories & Prose", "Poetry"],
+  Hindi: ["Vyakaran (Grammar)", "Kahani (Stories)", "Kavita (Poetry)"],
+  English: ["Grammar Essentials", "Reading Comprehension", "Writing Skills"],
+  Maths: ["Numbers & Operations", "Geometry", "Measurement & Data"],
+  Paryavaran: ["My Surroundings", "Plants & Animals", "Water & Air"],
+  Vigyan: ["Matter & Materials", "Living World", "Force & Energy"],
+  "Samajik Vigyan": ["History & Heritage", "Geography", "Civics & Society"],
+  EVS: ["My Family & Surroundings", "Plants & Animals", "Water, Air & Weather"],
+  Science: ["Matter & Materials", "Living World", "Force, Motion & Energy"],
+  "Social Science": ["History & Heritage", "Geography", "Civics & Economics"],
 };
 
 const RESOURCE_TYPES = ["Worksheet", "Notes", "Test Paper", "Solution"];
 
-// At least 10 sample resources across classes, subjects and types.
+// At least 10 sample resources across boards, classes, subjects and types.
 export const resources = [
   {
     id: 1,
-    title: "Real Numbers — Practice Worksheet",
+    title: "Numbers & Operations — Practice Worksheet",
     subject: "Maths",
-    standard: "Class 10",
-    chapter: "Real Numbers",
+    standard: "GSEB English Std 5",
+    chapter: "Numbers & Operations",
     type: "Worksheet",
     tags: ["practice", "important"],
     downloads: 142,
     url: "#",
-    uploadedAt: "2026-06-09T10:15:00Z",
+    uploadedAt: "2026-06-17T10:15:00Z",
   },
   {
     id: 2,
-    title: "Life Processes — Detailed Notes",
-    subject: "Science",
-    standard: "Class 10",
-    chapter: "Life Processes",
+    title: "Plants & Animals — EVS Notes",
+    subject: "EVS",
+    standard: "CBSE Std 4",
+    chapter: "Plants & Animals",
     type: "Notes",
     tags: ["revision", "final-exam"],
     downloads: 98,
     url: "#",
-    uploadedAt: "2026-06-08T14:30:00Z",
+    uploadedAt: "2026-06-16T14:30:00Z",
   },
   {
     id: 3,
-    title: "Quadratic Equations — Mid-Term Test Paper",
-    subject: "Maths",
-    standard: "Class 10",
-    chapter: "Quadratic Equations",
+    title: "Living World — Mid-Term Test Paper",
+    subject: "Science",
+    standard: "GSEB English Std 7",
+    chapter: "Living World",
     type: "Test Paper",
     tags: ["mid-term", "tricky"],
     downloads: 76,
     url: "#",
-    uploadedAt: "2026-06-07T09:00:00Z",
+    uploadedAt: "2026-06-15T09:00:00Z",
   },
   {
     id: 4,
-    title: "Laws of Motion — Solved Problems",
-    subject: "Physics",
-    standard: "Class 11",
-    chapter: "Laws of Motion",
-    type: "Solution",
-    tags: ["important", "practice"],
-    downloads: 113,
-    url: "#",
-    uploadedAt: "2026-06-06T16:45:00Z",
-  },
-  {
-    id: 5,
-    title: "Chemical Bonding — Revision Notes",
-    subject: "Chemistry",
-    standard: "Class 11",
-    chapter: "Chemical Bonding",
+    title: "Poetry — Gujarati Notes",
+    subject: "Gujarati",
+    standard: "GSEB Gujarati Std 3",
+    chapter: "Poetry",
     type: "Notes",
     tags: ["revision"],
     downloads: 64,
     url: "#",
-    uploadedAt: "2026-06-05T11:20:00Z",
+    uploadedAt: "2026-06-14T11:20:00Z",
   },
   {
-    id: 6,
-    title: "Cell Structure — Class 8 Worksheet",
-    subject: "Biology",
-    standard: "Class 8",
-    chapter: "Cell — Structure & Function",
+    id: 5,
+    title: "Vyakaran — Hindi Worksheet",
+    subject: "Hindi",
+    standard: "CBSE Std 6",
+    chapter: "Vyakaran (Grammar)",
     type: "Worksheet",
     tags: ["practice"],
     downloads: 51,
     url: "#",
-    uploadedAt: "2026-06-04T08:10:00Z",
+    uploadedAt: "2026-06-13T08:10:00Z",
+  },
+  {
+    id: 6,
+    title: "Geography — Samajik Vigyan Notes",
+    subject: "Samajik Vigyan",
+    standard: "GSEB Gujarati Std 8",
+    chapter: "Geography",
+    type: "Notes",
+    tags: ["revision", "important"],
+    downloads: 87,
+    url: "#",
+    uploadedAt: "2026-06-12T13:25:00Z",
   },
   {
     id: 7,
-    title: "The French Revolution — Final Exam Paper",
-    subject: "Social Science",
-    standard: "Class 9",
-    chapter: "The French Revolution",
+    title: "Reading Comprehension — English Test Paper",
+    subject: "English",
+    standard: "GSEB English Std 8",
+    chapter: "Reading Comprehension",
     type: "Test Paper",
     tags: ["final-exam", "important"],
-    downloads: 87,
+    downloads: 39,
     url: "#",
-    uploadedAt: "2026-06-03T13:25:00Z",
+    uploadedAt: "2026-06-11T10:40:00Z",
   },
   {
     id: 8,
-    title: "Grammar Essentials — Class 9 Notes",
-    subject: "English",
-    standard: "Class 9",
-    chapter: "Grammar Essentials",
-    type: "Notes",
-    tags: ["revision", "practice"],
-    downloads: 39,
-    url: "#",
-    uploadedAt: "2026-06-02T10:40:00Z",
-  },
-  {
-    id: 9,
-    title: "Trigonometry — Tricky Problems Solution",
+    title: "Geometry — Maths Solved Problems",
     subject: "Maths",
-    standard: "Class 11",
-    chapter: "Trigonometry",
+    standard: "CBSE Std 8",
+    chapter: "Geometry",
     type: "Solution",
     tags: ["tricky", "important"],
     downloads: 129,
     url: "#",
-    uploadedAt: "2026-06-01T15:05:00Z",
+    uploadedAt: "2026-06-10T15:05:00Z",
   },
   {
-    id: 10,
-    title: "Electrostatics — Class 12 Test Paper",
-    subject: "Physics",
-    standard: "Class 12",
-    chapter: "Electrostatics",
-    type: "Test Paper",
-    tags: ["mid-term", "tricky"],
-    downloads: 102,
-    url: "#",
-    uploadedAt: "2026-05-30T09:50:00Z",
-  },
-  {
-    id: 11,
-    title: "Carbon and its Compounds — Worksheet",
-    subject: "Chemistry",
-    standard: "Class 10",
-    chapter: "Carbon and its Compounds",
+    id: 9,
+    title: "Matter & Materials — Vigyan Worksheet",
+    subject: "Vigyan",
+    standard: "GSEB Gujarati Std 6",
+    chapter: "Matter & Materials",
     type: "Worksheet",
     tags: ["practice", "final-exam"],
     downloads: 73,
     url: "#",
-    uploadedAt: "2026-05-29T12:15:00Z",
+    uploadedAt: "2026-06-09T12:15:00Z",
+  },
+  {
+    id: 10,
+    title: "My Surroundings — Paryavaran Notes",
+    subject: "Paryavaran",
+    standard: "GSEB Gujarati Std 2",
+    chapter: "My Surroundings",
+    type: "Notes",
+    tags: ["practice"],
+    downloads: 58,
+    url: "#",
+    uploadedAt: "2026-06-08T14:00:00Z",
+  },
+  {
+    id: 11,
+    title: "History & Heritage — Social Science Worksheet",
+    subject: "Social Science",
+    standard: "CBSE Std 7",
+    chapter: "History & Heritage",
+    type: "Worksheet",
+    tags: ["practice", "revision"],
+    downloads: 102,
+    url: "#",
+    uploadedAt: "2026-06-07T09:50:00Z",
   },
   {
     id: 12,
-    title: "Genetics & Evolution — Revision Notes",
-    subject: "Biology",
-    standard: "Class 12",
-    chapter: "Genetics & Evolution",
+    title: "Grammar Essentials — English Notes",
+    subject: "English",
+    standard: "GSEB Gujarati Std 4",
+    chapter: "Grammar Essentials",
     type: "Notes",
     tags: ["revision", "important"],
-    downloads: 58,
+    downloads: 45,
     url: "#",
-    uploadedAt: "2026-05-28T14:00:00Z",
+    uploadedAt: "2026-06-06T12:15:00Z",
   },
 ];
 
@@ -240,13 +230,13 @@ const byType = RESOURCE_TYPES.map((type) => ({
 export const dashboardStats = {
   totalResources: 47,
   thisMonthUploads: 8,
-  totalSubjects: 7,
+  totalSubjects: subjects.length,
   bySubject,
   byType,
   // Extra fields consumed by the dashboard UI.
   totalStudents: 312,
   totalDownloads: 1032,
-  activeClasses: 5,
+  activeClasses: standards.length,
   downloadsByDay: [
     { day: "Mon", count: 34 },
     { day: "Tue", count: 41 },
@@ -281,21 +271,45 @@ export { RESOURCE_TYPES };
 // These power the Settings management screens and the Upload cascading dropdowns.
 // ---------------------------------------------------------------------------
 
-export const mockStandards = standards.map((name, i) => ({
-  id: i + 1,
-  name,
-  sortOrder: i + 1,
-}));
+// Maps a standard name + group to its list of subjects.
+function subjectsFor(group, stdNumber) {
+  if (group === "GSEB Gujarati Medium") {
+    const base = ["Gujarati", "Hindi", "English", "Maths"];
+    return stdNumber <= 5
+      ? [...base, "Paryavaran"]
+      : [...base, "Vigyan", "Samajik Vigyan"];
+  }
+  if (group === "GSEB English Medium") {
+    const base = ["Gujarati", "English", "Maths"];
+    return stdNumber <= 5
+      ? [...base, "EVS"]
+      : [...base, "Science", "Social Science"];
+  }
+  // CBSE
+  const base = ["Hindi", "English", "Maths"];
+  return stdNumber <= 5
+    ? [...base, "EVS"]
+    : [...base, "Science", "Social Science"];
+}
 
-const SUBJECTS_FOR = (standardName) =>
-  standardName === "Class 11" || standardName === "Class 12"
-    ? ["Maths", "Physics", "Chemistry", "Biology", "English"]
-    : ["Maths", "Science", "English", "Social Science"];
+let _standardId = 0;
+export const mockStandards = [];
+STANDARD_GROUP_DEFS.forEach(({ group, prefix }) => {
+  STD_NUMBERS.forEach((n) => {
+    mockStandards.push({
+      id: ++_standardId,
+      name: `${prefix} ${n}`,
+      group,
+      number: n,
+      sortOrder: _standardId,
+    });
+  });
+});
 
 let _subjectId = 0;
 export const mockSubjects = [];
 mockStandards.forEach((std) => {
-  SUBJECTS_FOR(std.name).forEach((name) => {
+  subjectsFor(std.group, std.number).forEach((name) => {
     mockSubjects.push({ id: ++_subjectId, name, standardId: std.id });
   });
 });
