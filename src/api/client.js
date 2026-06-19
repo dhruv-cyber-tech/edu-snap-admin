@@ -198,7 +198,7 @@ if (USE_MOCK) {
         description: get("description") ?? "",
         chapter: get("chapter") ?? "",
         type: get("type") ?? "Notes",
-        standard: get("standard") ?? "Class 10",
+        standard: get("standard") ?? "",
         tags: tagList,
         downloads: 0,
         url: "#",

@@ -28,7 +28,9 @@ import { Progress } from "@/components/ui/progress";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -321,10 +323,21 @@ export default function Upload() {
                   />
                 </SelectTrigger>
                 <SelectContent>
-                  {(standardsQuery.data ?? []).map((s) => (
-                    <SelectItem key={s.id} value={String(s.id)}>
-                      {s.name}
-                    </SelectItem>
+                  {Object.entries(
+                    (standardsQuery.data ?? []).reduce((acc, s) => {
+                      const key = s.group ?? "Other";
+                      (acc[key] = acc[key] ?? []).push(s);
+                      return acc;
+                    }, {}),
+                  ).map(([group, items]) => (
+                    <SelectGroup key={group}>
+                      <SelectLabel>{group}</SelectLabel>
+                      {items.map((s) => (
+                        <SelectItem key={s.id} value={String(s.id)}>
+                          {s.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
                   ))}
                 </SelectContent>
               </Select>
@@ -430,7 +443,7 @@ export default function Upload() {
           <Input
             id="title"
             className="h-12 text-base"
-            placeholder="e.g. Real Numbers — Practice Worksheet"
+            placeholder="e.g. Numbers & Operations — Practice Worksheet"
             {...register("title", { required: "Title is required" })}
           />
           {errors.title && (

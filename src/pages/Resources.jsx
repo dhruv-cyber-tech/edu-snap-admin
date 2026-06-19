@@ -12,7 +12,7 @@ import {
   ArrowUp,
 } from "lucide-react";
 import client from "@/api/client";
-import { standards, subjects, chapters, RESOURCE_TYPES } from "@/api/mockData";
+import { standardGroups, subjects, chapters, RESOURCE_TYPES } from "@/api/mockData";
 import PageHeader from "@/components/PageHeader";
 import ErrorState from "@/components/ErrorState";
 import { Card, CardContent } from "@/components/ui/card";
@@ -32,7 +32,9 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -199,10 +201,15 @@ export default function Resources() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={ALL}>All Classes</SelectItem>
-                {standards.map((s) => (
-                  <SelectItem key={s} value={s}>
-                    {s}
-                  </SelectItem>
+                {standardGroups.map((g) => (
+                  <SelectGroup key={g.group}>
+                    <SelectLabel>{g.group}</SelectLabel>
+                    {g.standards.map((s) => (
+                      <SelectItem key={s} value={s}>
+                        {s}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
                 ))}
               </SelectContent>
             </Select>
