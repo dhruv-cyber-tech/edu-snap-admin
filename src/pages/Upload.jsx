@@ -443,7 +443,7 @@ export default function Upload() {
           <Input
             id="title"
             className="h-12 text-base"
-            placeholder="e.g. Real Numbers — Practice Worksheet"
+            placeholder="e.g. Numbers & Operations — Practice Worksheet"
             {...register("title", { required: "Title is required" })}
           />
           {errors.title && (
