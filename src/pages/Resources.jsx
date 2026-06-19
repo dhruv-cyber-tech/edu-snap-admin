@@ -12,7 +12,7 @@ import {
   ArrowUp,
 } from "lucide-react";
 import client from "@/api/client";
-import { standards, subjects, chapters, RESOURCE_TYPES } from "@/api/mockData";
+import { standardGroups, subjects, chapters, RESOURCE_TYPES } from "@/api/mockData";
 import PageHeader from "@/components/PageHeader";
 import ErrorState from "@/components/ErrorState";
 import { Card, CardContent } from "@/components/ui/card";
