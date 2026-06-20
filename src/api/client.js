@@ -11,7 +11,7 @@ import {
 
 // Flip this to false when you are ready to connect the real Spring Boot API.
 // Every API function keeps the same name and shape, so nothing else changes.
-const USE_MOCK = true;
+const USE_MOCK = false;
 
 export const API_BASE_URL = "http://localhost:8080/api";
 
