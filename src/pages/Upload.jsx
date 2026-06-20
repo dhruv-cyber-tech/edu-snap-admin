@@ -93,14 +93,14 @@ export default function Upload() {
     queryKey: ["subjects", standardId],
     enabled: !!standardId,
     queryFn: async () =>
-      (await client.get(`/standards/${standardId}/subjects`)).data,
+      (await client.get(`/subjects/by-standard/${standardId}`)).data,
   });
 
   const chaptersQuery = useQuery({
     queryKey: ["chapters", subjectId],
     enabled: !!subjectId,
     queryFn: async () =>
-      (await client.get(`/subjects/${subjectId}/chapters`)).data,
+      (await client.get(`/chapters/by-subject/${subjectId}`)).data,
   });
 
   const tagsQuery = useQuery({
@@ -108,7 +108,9 @@ export default function Upload() {
     queryFn: async () => (await client.get("/tags")).data,
   });
 
-  const tagSuggestions = (tagsQuery.data ?? []).filter(
+ const tagSuggestions = (tagsQuery.data ?? [])
+  .map(t => typeof t === 'object' ? t.name : t)
+  .filter(
     (t) =>
       !tags.includes(t) &&
       (!tagInput || t.toLowerCase().includes(tagInput.toLowerCase())),
@@ -154,8 +156,9 @@ export default function Upload() {
 
       const formData = new FormData();
       formData.append("title", values.title);
+      formData.append("adminUserId", "1"); // hardcode for now
+      formData.append("resourceType", values.type.toUpperCase().replace(" ", "_"));
       formData.append("description", values.description ?? "");
-      formData.append("type", values.type);
       formData.append("standardId", values.standardId);
       formData.append("subjectId", values.subjectId);
       formData.append("chapterId", values.chapterId);

@@ -321,28 +321,31 @@ export default function Resources() {
                       {resources.map((r) => (
                         <TableRow key={r.id}>
                           <TableCell className="font-medium">{r.title}</TableCell>
-                          <TableCell className="whitespace-nowrap">{r.standard}</TableCell>
-                          <TableCell>{r.subject}</TableCell>
-                          <TableCell className="max-w-[180px] truncate">{r.chapter}</TableCell>
+                          <TableCell className="whitespace-nowrap">{r.standard?.name}</TableCell>
+<TableCell>{r.subject?.name}</TableCell>
+<TableCell className="max-w-[180px] truncate">{r.chapter?.name}</TableCell>
                           <TableCell>
                             <Badge
                               variant="outline"
-                              className={TYPE_BADGE[r.type] ?? ""}
+                              className={TYPE_BADGE[r.resourceType] ?? ""}
                             >
-                              {r.type}
+                              {r.resourceType}
                             </Badge>
                           </TableCell>
                           <TableCell>
                             <div className="flex flex-wrap gap-1">
-                              {(r.tags ?? []).map((t) => (
-                                <Badge key={t} variant="secondary" className="text-xs">
-                                  {t}
-                                </Badge>
-                              ))}
+                              {(r.tags ?? []).map((t) => {
+  const tagName = typeof t === "object" ? t.name : t;
+  return (
+    <Badge key={tagName} variant="secondary" className="text-xs">
+      {tagName}
+    </Badge>
+  );
+})}
                             </div>
                           </TableCell>
                           <TableCell className="whitespace-nowrap text-muted-foreground">
-                            {formatDate(r.uploadedAt)}
+                            {formatDate(r.createdAt)}
                           </TableCell>
                           <TableCell>
                             <div className="flex justify-end gap-1">
@@ -403,22 +406,22 @@ export default function Resources() {
 
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge variant="outline" className="text-xs">
-                      {r.subject}
+                      {r.subject?.name}
                     </Badge>
                     <Badge variant="secondary" className="text-xs">
-                      {r.standard}
+                      {r.standard?.name}
                     </Badge>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge
                       variant="outline"
-                      className={TYPE_BADGE[r.type] ?? ""}
+                      className={TYPE_BADGE[r.resourceType] ?? ""}
                     >
-                      {r.type}
+                      {r.resourceType}
                     </Badge>
                     <span className="text-sm text-muted-foreground truncate">
-                      {r.chapter}
+                      {r.chapter?.name}
                     </span>
                   </div>
 

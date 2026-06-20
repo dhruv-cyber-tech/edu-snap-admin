@@ -31,7 +31,7 @@ export default function Login() {
     setSubmitting(true);
     try {
       const { data } = await client.post("/auth/login", values);
-      login({ token: data.token, user: data.user });
+      login({ token: data.token, user: data.user ?? null });
       navigate("/dashboard", { replace: true });
     } catch (err) {
       const msg =

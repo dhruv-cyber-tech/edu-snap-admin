@@ -27,6 +27,7 @@ const client = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
+// ADD THIS - attaches token to every request
 client.interceptors.request.use((config) => {
   const token =
     typeof window !== "undefined" ? window.localStorage.getItem(TOKEN_KEY) : null;
@@ -38,7 +39,13 @@ client.interceptors.request.use((config) => {
 });
 
 client.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // unwrap { success: true, data: ... } envelope
+    if (response.data && response.data.success !== undefined) {
+      response.data = response.data.data;
+    }
+    return response;
+  },
   (error) => {
     if (error?.response?.status === 401 && typeof window !== "undefined") {
       window.localStorage.removeItem(TOKEN_KEY);

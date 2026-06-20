@@ -262,7 +262,7 @@ function SubjectsTab() {
     queryKey: ["subjects", standardId],
     enabled: !!standardId,
     queryFn: async () =>
-      (await client.get(`/standards/${standardId}/subjects`)).data,
+      (await client.get(`/subjects/by-standard/${standardId}`)).data,
   });
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
@@ -442,14 +442,14 @@ function ChaptersTab() {
     queryKey: ["subjects", standardId],
     enabled: !!standardId,
     queryFn: async () =>
-      (await client.get(`/standards/${standardId}/subjects`)).data,
+      (await client.get(`/subjects/by-standard/${standardId}`)).data,
   });
 
   const chaptersQuery = useQuery({
     queryKey: ["chapters", subjectId],
     enabled: !!subjectId,
     queryFn: async () =>
-      (await client.get(`/subjects/${subjectId}/chapters`)).data,
+      (await client.get(`/chapters/by-subject/${subjectId}`)).data,
   });
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
