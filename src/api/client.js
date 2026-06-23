@@ -13,7 +13,7 @@ import {
 // Every API function keeps the same name and shape, so nothing else changes.
 const USE_MOCK = false;
 
-export const API_BASE_URL = "http://localhost:8080/api";
+export const API_BASE_URL = "https://eduvault-backend-production-9cce.up.railway.app/api";
 
 export const TOKEN_KEY = "token";
 
