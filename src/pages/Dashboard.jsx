@@ -126,10 +126,10 @@ export default function Dashboard() {
               <CardContent>
                 <div className="h-64 w-full">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={data.bySubject ?? []}>
+                    <BarChart data={data.resourcesBySubject ?? []}>
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                       <XAxis
-                        dataKey="subject"
+                        dataKey="subjectName"
                         stroke="var(--muted-foreground)"
                         fontSize={11}
                         interval={0}
@@ -162,14 +162,14 @@ export default function Dashboard() {
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
-                        data={data.byType ?? []}
+                        data={data.resourcesByType?? []}
                         dataKey="count"
                         nameKey="type"
                         innerRadius={55}
                         outerRadius={85}
                         paddingAngle={3}
                       >
-                        {(data.byType ?? []).map((_, i) => (
+                        {(data.resourcesByType ?? []).map((_, i) => (
                           <Cell
                             key={i}
                             fill={DONUT_COLORS[i % DONUT_COLORS.length]}
@@ -224,14 +224,14 @@ export default function Dashboard() {
                     {recent.map((r) => (
                       <TableRow key={r.id}>
                         <TableCell className="font-medium">{r.title}</TableCell>
-                        <TableCell>{r.subject}</TableCell>
-                        <TableCell>{r.standard}</TableCell>
-                        <TableCell>
-                          <Badge variant="secondary">{r.type}</Badge>
-                        </TableCell>
-                        <TableCell className="whitespace-nowrap text-muted-foreground">
-                          {formatDate(r.uploadedAt)}
-                        </TableCell>
+                        <TableCell>{r.subject?.name}</TableCell>
+<TableCell>{r.standard?.name}</TableCell>
+<TableCell>
+  <Badge variant="secondary">{r.resourceType}</Badge>
+</TableCell>
+<TableCell className="whitespace-nowrap text-muted-foreground">
+  {formatDate(r.createdAt)}
+</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

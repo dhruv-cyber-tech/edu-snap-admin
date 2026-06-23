@@ -12,7 +12,19 @@ import {
   ArrowUp,
 } from "lucide-react";
 import client from "@/api/client";
-import { standardGroups, subjects, chapters, RESOURCE_TYPES } from "@/api/mockData";
+const RESOURCE_TYPES = [
+  { value: "WORKSHEET", label: "Worksheet" },
+  { value: "NOTES", label: "Notes" },
+  { value: "TEST_PAPER", label: "Test Paper" },
+  { value: "SOLUTION", label: "Solution" },
+];
+
+const TYPE_LABEL = {
+  WORKSHEET: "Worksheet",
+  NOTES: "Notes",
+  TEST_PAPER: "Test Paper",
+  SOLUTION: "Solution",
+};
 import PageHeader from "@/components/PageHeader";
 import ErrorState from "@/components/ErrorState";
 import { Card, CardContent } from "@/components/ui/card";
@@ -60,10 +72,10 @@ import {
 const ALL = "all";
 
 const TYPE_BADGE = {
-  Worksheet: "bg-chart-1/15 text-chart-1 border-chart-1/30",
-  Notes: "bg-chart-2/15 text-chart-2 border-chart-2/30",
-  "Test Paper": "bg-chart-4/15 text-chart-4 border-chart-4/30",
-  Solution: "bg-chart-3/15 text-chart-3 border-chart-3/30",
+  WORKSHEET: "bg-chart-1/15 text-chart-1 border-chart-1/30",
+  NOTES: "bg-chart-2/15 text-chart-2 border-chart-2/30",
+  TEST_PAPER: "bg-chart-4/15 text-chart-4 border-chart-4/30",
+  SOLUTION: "bg-chart-3/15 text-chart-3 border-chart-3/30",
 };
 
 function formatDate(value) {
@@ -77,10 +89,10 @@ function formatDate(value) {
 
 function buildQuery(filters) {
   const params = new URLSearchParams({ page: "0", size: "20" });
-  if (filters.standard) params.set("standard", filters.standard);
-  if (filters.subject) params.set("subject", filters.subject);
-  if (filters.chapter) params.set("chapter", filters.chapter);
-  if (filters.type) params.set("type", filters.type);
+  if (filters.standard) params.set("standardId", filters.standard);
+  if (filters.subject) params.set("subjectId", filters.subject);
+  if (filters.chapter) params.set("chapterId", filters.chapter);
+  if (filters.type) params.set("resourceType", filters.type);
   if (filters.search) params.set("search", filters.search);
   return params.toString();
 }
@@ -121,6 +133,24 @@ export default function Resources() {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   const queryString = buildQuery(filters);
+  const standardsQuery = useQuery({
+  queryKey: ["standards"],
+  queryFn: async () => (await client.get("/standards")).data,
+});
+
+const subjectsQuery = useQuery({
+  queryKey: ["subjects", filters.standard],
+  enabled: !!filters.standard,
+  queryFn: async () =>
+    (await client.get(`/subjects/by-standard/${filters.standard}`)).data,
+});
+
+const chaptersQuery = useQuery({
+  queryKey: ["chapters", filters.subject],
+  enabled: !!filters.subject,
+  queryFn: async () =>
+    (await client.get(`/chapters/by-subject/${filters.subject}`)).data,
+});
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["resources", queryString],
@@ -163,9 +193,6 @@ export default function Resources() {
       ...(key === "subject" ? { chapter: "" } : {}),
     }));
 
-  const chapterOptions = filters.subject
-    ? (chapters[filters.subject] ?? [])
-    : Object.values(chapters).flat();
 
   const hasFilters = Object.values(filters).some(Boolean);
 
@@ -193,56 +220,60 @@ export default function Resources() {
 
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             <Select
-              value={filters.standard || ALL}
-              onValueChange={(v) => setFilter("standard", v === ALL ? "" : v)}
-            >
-              <SelectTrigger className="h-11">
-                <SelectValue placeholder="Class" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={ALL}>All Classes</SelectItem>
-                {standardGroups.map((g) => (
-                  <SelectGroup key={g.group}>
-                    <SelectLabel>{g.group}</SelectLabel>
-                    {g.standards.map((s) => (
-                      <SelectItem key={s} value={s}>
-                        {s}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                ))}
-              </SelectContent>
-            </Select>
+  value={filters.standard || ALL}
+  onValueChange={(v) => {
+    setFilter("standard", v === ALL ? "" : v);
+    setFilter("subject", "");
+    setFilter("chapter", "");
+  }}
+>
+  <SelectTrigger className="h-11">
+    <SelectValue placeholder="Class" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value={ALL}>All Classes</SelectItem>
+    {(standardsQuery.data ?? []).map((s) => (
+      <SelectItem key={s.id} value={String(s.id)}>
+        {s.name}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
 
             <Select
-              value={filters.subject || ALL}
-              onValueChange={(v) => setFilter("subject", v === ALL ? "" : v)}
-            >
-              <SelectTrigger className="h-11">
-                <SelectValue placeholder="Subject" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={ALL}>All Subjects</SelectItem>
-                {subjects.map((s) => (
-                  <SelectItem key={s} value={s}>
-                    {s}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+  value={filters.subject || ALL}
+  onValueChange={(v) => {
+    setFilter("subject", v === ALL ? "" : v);
+    setFilter("chapter", "");
+  }}
+  disabled={!filters.standard}
+>
+  <SelectTrigger className="h-11">
+    <SelectValue placeholder="Subject" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value={ALL}>All Subjects</SelectItem>
+    {(subjectsQuery.data ?? []).map((s) => (
+      <SelectItem key={s.id} value={String(s.id)}>
+        {s.name}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
 
-            <Select
-              value={filters.chapter || ALL}
-              onValueChange={(v) => setFilter("chapter", v === ALL ? "" : v)}
-            >
-              <SelectTrigger className="h-11">
-                <SelectValue placeholder="Chapter" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={ALL}>All Chapters</SelectItem>
-                {chapterOptions.map((c) => (
-                  <SelectItem key={c} value={c}>
-                    {c}
+           <Select
+  value={filters.chapter || ALL}
+  onValueChange={(v) => setFilter("chapter", v === ALL ? "" : v)}
+  disabled={!filters.subject}
+>
+  <SelectTrigger className="h-11">
+    <SelectValue placeholder="Chapter" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value={ALL}>All Chapters</SelectItem>
+    {(chaptersQuery.data ?? []).map((c) => (
+      <SelectItem key={c.id} value={String(c.id)}>
+        {c.chapterNumber ? `${c.chapterNumber}. ${c.name}` : c.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -258,10 +289,10 @@ export default function Resources() {
               <SelectContent>
                 <SelectItem value={ALL}>All Types</SelectItem>
                 {RESOURCE_TYPES.map((t) => (
-                  <SelectItem key={t} value={t}>
-                    {t}
-                  </SelectItem>
-                ))}
+  <SelectItem key={t.value} value={t.value}>
+    {t.label}
+  </SelectItem>
+))}
               </SelectContent>
             </Select>
           </div>
@@ -329,7 +360,7 @@ export default function Resources() {
                               variant="outline"
                               className={TYPE_BADGE[r.resourceType] ?? ""}
                             >
-                              {r.resourceType}
+                              {TYPE_LABEL[r.resourceType] ?? r.resourceType}
                             </Badge>
                           </TableCell>
                           <TableCell>
@@ -355,9 +386,9 @@ export default function Resources() {
                                 size="icon"
                                 title="View"
                               >
-                                <a href={r.url || "#"} target="_blank" rel="noreferrer">
-                                  <Eye className="h-4 w-4" />
-                                </a>
+                                <a href={`http://localhost:8080/api/resources/${r.id}/preview`} target="_blank" rel="noreferrer">
+  <Eye className="h-4 w-4" />
+</a>
                               </Button>
                               <Button
                                 asChild
@@ -365,9 +396,9 @@ export default function Resources() {
                                 size="icon"
                                 title="Download"
                               >
-                                <a href={r.url || "#"} download>
-                                  <Download className="h-4 w-4" />
-                                </a>
+                                <a href={`http://localhost:8080/api/resources/${r.id}/download`} download>
+  <Download className="h-4 w-4" />
+</a>
                               </Button>
                               <Button
                                 variant="ghost"
@@ -418,7 +449,7 @@ export default function Resources() {
                       variant="outline"
                       className={TYPE_BADGE[r.resourceType] ?? ""}
                     >
-                      {r.resourceType}
+                      {TYPE_LABEL[r.resourceType] ?? r.resourceType}
                     </Badge>
                     <span className="text-sm text-muted-foreground truncate">
                       {r.chapter?.name}
@@ -434,9 +465,9 @@ export default function Resources() {
                       title="View"
                       aria-label="View resource"
                     >
-                      <a href={r.url || "#"} target="_blank" rel="noreferrer">
-                        <Eye className="h-4 w-4" />
-                      </a>
+                      <a href={`http://localhost:8080/api/resources/${r.id}/preview`} target="_blank" rel="noreferrer">
+  <Eye className="h-4 w-4" />
+</a>
                     </Button>
                     <Button
                       asChild
@@ -446,9 +477,9 @@ export default function Resources() {
                       title="Download"
                       aria-label="Download resource"
                     >
-                      <a href={r.url || "#"} download>
-                        <Download className="h-4 w-4" />
-                      </a>
+                     <a href={`http://localhost:8080/api/resources/${r.id}/download`} download>
+  <Download className="h-4 w-4" />
+</a>
                     </Button>
                     <Button
                       variant="ghost"
@@ -586,9 +617,7 @@ function EditDialog({ resource, onClose, onSave, saving }) {
     onClose();
   };
 
-  const chapterOptions = current.subject
-    ? (chapters[current.subject] ?? [])
-    : Object.values(chapters).flat();
+const chapterOptions = [];
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
@@ -617,16 +646,7 @@ function EditDialog({ resource, onClose, onSave, saving }) {
                   <SelectValue placeholder="Class" />
                 </SelectTrigger>
                 <SelectContent>
-                  {standardGroups.map((g) => (
-                    <SelectGroup key={g.group}>
-                      <SelectLabel>{g.group}</SelectLabel>
-                      {g.standards.map((s) => (
-                        <SelectItem key={s} value={s}>
-                          {s}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  ))}
+                  {[]}
                 </SelectContent>
               </Select>
             </div>
@@ -644,11 +664,7 @@ function EditDialog({ resource, onClose, onSave, saving }) {
                   <SelectValue placeholder="Subject" />
                 </SelectTrigger>
                 <SelectContent>
-                  {subjects.map((s) => (
-                    <SelectItem key={s} value={s}>
-                      {s}
-                    </SelectItem>
-                  ))}
+                  {[]}
                 </SelectContent>
               </Select>
             </div>
@@ -662,11 +678,7 @@ function EditDialog({ resource, onClose, onSave, saving }) {
                   <SelectValue placeholder="Chapter" />
                 </SelectTrigger>
                 <SelectContent>
-                  {chapterOptions.map((c) => (
-                    <SelectItem key={c} value={c}>
-                      {c}
-                    </SelectItem>
-                  ))}
+                  {[]}
                 </SelectContent>
               </Select>
             </div>
@@ -679,10 +691,10 @@ function EditDialog({ resource, onClose, onSave, saving }) {
                 </SelectTrigger>
                 <SelectContent>
                   {RESOURCE_TYPES.map((t) => (
-                    <SelectItem key={t} value={t}>
-                      {t}
-                    </SelectItem>
-                  ))}
+  <SelectItem key={t.value} value={t.value}>
+    {t.label}
+  </SelectItem>
+))}
                 </SelectContent>
               </Select>
             </div>

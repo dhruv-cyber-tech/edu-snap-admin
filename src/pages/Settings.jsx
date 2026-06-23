@@ -459,7 +459,7 @@ function ChaptersTab() {
   const createMutation = useMutation({
     mutationFn: async (values) =>
       (await client.post("/chapters", {
-        number: Number(values.number),
+        chapterNumber: Number(values.number),
         name: values.name,
         subjectId: Number(subjectId),
       })).data,

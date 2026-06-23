@@ -165,7 +165,9 @@ export default function Upload() {
       formData.append("standard", stdName ?? "");
       formData.append("subject", subjName ?? "");
       formData.append("chapter", chapName ?? "");
-      formData.append("tags", JSON.stringify(tags));
+      if (tags.length > 0) {
+    tags.forEach(tag => formData.append("tags", tag));
+}
       if (file) formData.append("file", file);
 
       setProgress(0);
@@ -403,7 +405,7 @@ export default function Upload() {
           <Controller
             control={control}
             name="chapterId"
-            rules={{ required: "Please select a chapter" }}
+            rules={{ required: false }}
             render={({ field }) => (
               <Select
                 value={field.value}
@@ -424,7 +426,7 @@ export default function Upload() {
                 <SelectContent>
                   {(chaptersQuery.data ?? []).map((c) => (
                     <SelectItem key={c.id} value={String(c.id)}>
-                      {c.number}. {c.name}
+                      {c.chapterNumber ? `${c.chapterNumber}. ${c.name}` : c.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
