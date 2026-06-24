@@ -386,7 +386,7 @@ const chaptersQuery = useQuery({
                                 size="icon"
                                 title="View"
                               >
-                                <a href={`http://localhost:8080/api/resources/${r.id}/preview`} target="_blank" rel="noreferrer">
+                                <a href={`https://eduvault-backend-production-9cce.up.railway.app/api/resources/${r.id}/preview`} target="_blank" rel="noreferrer">
   <Eye className="h-4 w-4" />
 </a>
                               </Button>
@@ -396,7 +396,7 @@ const chaptersQuery = useQuery({
                                 size="icon"
                                 title="Download"
                               >
-                                <a href={`http://localhost:8080/api/resources/${r.id}/download`} download>
+                                <a href={`https://eduvault-backend-production-9cce.up.railway.app/api/resources/${r.id}/download`} download>
   <Download className="h-4 w-4" />
 </a>
                               </Button>
@@ -465,7 +465,7 @@ const chaptersQuery = useQuery({
                       title="View"
                       aria-label="View resource"
                     >
-                      <a href={`http://localhost:8080/api/resources/${r.id}/preview`} target="_blank" rel="noreferrer">
+                      <a href={`https://eduvault-backend-production-9cce.up.railway.app/api/resources/${r.id}/preview`} target="_blank" rel="noreferrer">
   <Eye className="h-4 w-4" />
 </a>
                     </Button>
@@ -477,7 +477,7 @@ const chaptersQuery = useQuery({
                       title="Download"
                       aria-label="Download resource"
                     >
-                     <a href={`http://localhost:8080/api/resources/${r.id}/download`} download>
+                     <a href={`https://eduvault-backend-production-9cce.up.railway.app/api/resources/${r.id}/download`} download>
   <Download className="h-4 w-4" />
 </a>
                     </Button>
