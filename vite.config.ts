@@ -1,15 +1,14 @@
-import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import { defineConfig } from 'vite';
 import viteReact from '@vitejs/plugin-react';
-import { nitro } from 'nitro/vite';
-// Import this if you are using path aliases like "@/app/EduVaultApp"
-import tsconfigPaths from 'vite-tsconfig-paths'; 
+import path from 'path';
 
 export default defineConfig({
   plugins: [
-    tanstackStart({ server: { entry: "server" } }), 
-    nitro(), 
     viteReact(),
-    tsconfigPaths() 
   ],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
 });
