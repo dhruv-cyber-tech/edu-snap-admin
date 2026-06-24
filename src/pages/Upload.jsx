@@ -156,7 +156,6 @@ export default function Upload() {
 
       const formData = new FormData();
       formData.append("title", values.title);
-      formData.append("adminUserId", "1"); // hardcode for now
       formData.append("resourceType", values.type.toUpperCase().replace(" ", "_"));
       formData.append("description", values.description ?? "");
       formData.append("standardId", values.standardId);
