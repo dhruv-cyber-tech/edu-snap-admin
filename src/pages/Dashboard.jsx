@@ -224,8 +224,8 @@ export default function Dashboard() {
                     {recent.map((r) => (
                       <TableRow key={r.id}>
                         <TableCell className="font-medium">{r.title}</TableCell>
-                        <TableCell>{r.subject?.name}</TableCell>
-<TableCell>{r.standard?.name}</TableCell>
+                        <TableCell>{r.subjectName}</TableCell>
+<TableCell>{r.standardName}</TableCell>
 <TableCell>
   <Badge variant="secondary">{r.resourceType}</Badge>
 </TableCell>
