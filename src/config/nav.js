@@ -19,6 +19,15 @@ export const mainNav = [
   { to: "/settings", label: "Settings", icon: Settings },
 ];
 
+// Items shown in the mobile bottom bar (kept to 5 for spacing).
+export const bottomNav = [
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/resources", label: "Resources", icon: FolderOpen },
+  { to: "/upload", label: "Upload", icon: Upload },
+  { to: "/students", label: "Students", icon: Users },
+  { to: "/fees", label: "Fees", icon: Wallet },
+];
+
 // Future modules — visible on desktop sidebar as "Coming Soon", disabled.
 export const comingSoonNav = [
   { to: "/attendance", label: "Attendance", icon: CalendarCheck },
