@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Users, Wallet, CalendarCheck, ClipboardList } from "lucide-react";
+import { CalendarCheck, ClipboardList } from "lucide-react";
 
 import { Toaster } from "../components/ui/sonner";
 import OfflineBanner from "../components/OfflineBanner";
@@ -11,6 +11,8 @@ import Dashboard from "../pages/Dashboard";
 import Resources from "../pages/Resources";
 import Upload from "../pages/Upload";
 import Settings from "../pages/Settings";
+import Students from "../pages/Students";
+import Fees from "../pages/Fees";
 import ComingSoon from "../pages/ComingSoon";
 
 const queryClient = new QueryClient({
