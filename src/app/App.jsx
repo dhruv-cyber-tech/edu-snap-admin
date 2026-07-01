@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Users, Wallet, CalendarCheck, ClipboardList } from "lucide-react";
+import { CalendarCheck, ClipboardList } from "lucide-react";
 
 import { Toaster } from "../components/ui/sonner";
 import OfflineBanner from "../components/OfflineBanner";
@@ -11,6 +11,8 @@ import Dashboard from "../pages/Dashboard";
 import Resources from "../pages/Resources";
 import Upload from "../pages/Upload";
 import Settings from "../pages/Settings";
+import Students from "../pages/Students";
+import Fees from "../pages/Fees";
 import ComingSoon from "../pages/ComingSoon";
 
 const queryClient = new QueryClient({
@@ -39,40 +41,9 @@ export default function App() {
             <Route path="/resources" element={<Resources />} />
             <Route path="/upload" element={<Upload />} />
             <Route path="/settings" element={<Settings />} />
-            <Route
-              path="/students"
-              element={
-                <ComingSoon
-                  title="Students"
-                  description="Student portal"
-                  icon={Users}
-                  message="Student portal coming soon"
-                  features={[
-                    "Student profiles",
-                    "Login access",
-                    "Assignment submissions",
-                    "Progress tracking",
-                  ]}
-                />
-              }
-            />
-            <Route
-              path="/fees"
-              element={
-                <ComingSoon
-                  title="Fees"
-                  description="Fee management"
-                  icon={Wallet}
-                  message="Fee management coming soon"
-                  features={[
-                    "Fee records",
-                    "Payment tracking",
-                    "Due date reminders",
-                    "Payment history",
-                  ]}
-                />
-              }
-            />
+            <Route path="/students" element={<Students />} />
+            <Route path="/fees" element={<Fees />} />
+
             <Route
               path="/attendance"
               element={
