@@ -3,7 +3,7 @@ import { NavLink, useNavigate, useLocation, Outlet } from "react-router-dom";
 import { GraduationCap, LogOut, Lock, Menu, ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { mainNav, comingSoonNav } from "@/config/nav";
+import { mainNav, bottomNav, comingSoonNav } from "@/config/nav";
 import { useAuthStore } from "@/store/auth";
 
 function initials(name) {
@@ -124,8 +124,8 @@ function Sidebar({ collapsed, onToggle }) {
 function BottomNav() {
   return (
     <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
-      <div className="grid grid-cols-4">
-        {mainNav.map(({ to, label, icon: Icon }) => (
+      <div className="grid grid-cols-5">
+        {bottomNav.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}
